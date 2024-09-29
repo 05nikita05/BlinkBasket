@@ -44,12 +44,10 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
         minlength: 8
     },
     phone: {
         type: String, // Changed to String to handle leading zeros if any
-        required: true,
         validate: {
             validator: function(v) {
                 return /^[0-9]{10}$/.test(v);
@@ -62,7 +60,8 @@ const userSchema = mongoose.Schema({
         required: true,
         validate: {
             validator: function(v) {
-                return v.length > 0;
+                if (this.isOAuth) return true; // If OAuth, addresses can be empty
+                return v.length >= 0;
             },
             message: 'At least one address is required.'
         }
@@ -84,7 +83,7 @@ const userValidationSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
     phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
-    addresses: Joi.array().items(addressValidationSchema).min(1).required()
+    addresses: Joi.array().items(addressValidationSchema).required()
 });
 
 module.exports = {
