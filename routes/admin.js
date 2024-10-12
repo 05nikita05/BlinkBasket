@@ -2,8 +2,12 @@ require("dotenv").config();
 const express = require('express');
 const router = express.Router();
 const {adminModel} = require('../models/adminModel');
+const {productModel} = require('../models/productModel');
+const {categoryModel}= require('../models/categoryModel');
+
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const validateAdmin = require('../middlewares/admin');
 
 
 if(typeof process.env.NODE_ENV !== undefined && 
@@ -49,7 +53,48 @@ router.post('/login',async(req,res)=>{
     }
 })
 
-router.get('/dashboard',(req,res)=>{
-    res.render('admin_login')
+router.get('/dashboard',validateAdmin,(req,res)=>{
+    res.render('admin_dashboard');
 })
+
+router.get('/products',validateAdmin,async(req,res)=>{
+    
+    const result = await productModel.aggregate([
+        
+        {
+          // Group products by category name and push each product into an array
+          $group: {
+            _id: '$category',
+            products: { $push: '$$ROOT' }
+          }
+        },
+        {
+          // Slice the array of products to include only the first 10 products in each category
+          $project: {
+            _id:0,
+            category: '$_id',
+            products: { $slice: ['$products', 10] }
+          }
+        },
+        
+      ]);
+      
+      // Convert the result into an object
+const formattedResult = result.reduce((acc, item) => {
+    acc[item.category] = item.products; // Assign the category name as key
+    return acc;
+  }, {});
+  
+  console.log(formattedResult);
+          
+    // res.render('admin_products',{products})
+})
+
+router.get('/logout',validateAdmin,(req,res)=>{
+    res.cookie("token","");
+    res.redirect("admin_login");
+})
+
+
+
 module.exports = router;

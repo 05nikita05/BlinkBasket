@@ -21,29 +21,32 @@ const productSchema = mongoose.Schema({
         maxlength: 100
     },
     stock: {
-        type: Boolean,
+        type: Number,
         required: true
     },
     description: {
         type: String,
     },
     image: {
-        type: String,
+        type: Buffer,
     }
 }, { timestamps: true });
 
 
 // Joi Validation Schema
-const productValidationSchema = Joi.object({
+const validateProduct =(data)=>{
+const schema =  Joi.object({
     name: Joi.string().min(3).max(100).required(),
     price: Joi.number().min(0).required(),
-    category: Joi.string().hex().length(24).required(), // ObjectId reference to 'category'
-    stock: Joi.boolean().required(),
+    category: Joi.string().min(3).max(50).required(), // ObjectId reference to 'category'
+    stock: Joi.number().required(),
     description: Joi.string().required(),
-    image: Joi.string().required() // URL validation for the image
-});
+    image: Joi.string().optional() // URL validation for the image
 
+});
+return schema.validate(data);
+}
 module.exports = {
     productModel : mongoose.model('Product', productSchema),
-    productValidationSchema
+    validateProduct
 };
