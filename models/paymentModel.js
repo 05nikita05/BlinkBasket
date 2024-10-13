@@ -33,7 +33,7 @@ const paymentSchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const paymentValidationSchema = Joi.object({
+const validatePayment = Joi.object({
     order: Joi.string().hex().length(24).required(), // ObjectId should be 24 hex characters long
     amount: Joi.number().min(0).required(), // Must be a non-negative number
     method: Joi.string().required(),
@@ -43,5 +43,5 @@ const paymentValidationSchema = Joi.object({
 
 module.exports = {
     paymentModel : mongoose.model('Payment', paymentSchema),
-    paymentValidationSchema
+    validatePayment
 };

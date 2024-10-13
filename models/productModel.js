@@ -40,7 +40,7 @@ const schema =  Joi.object({
     price: Joi.number().min(0).required(),
     category: Joi.string().min(3).max(50).required(), // ObjectId reference to 'category'
     stock: Joi.number().required(),
-    description: Joi.string().required(),
+    description: Joi.string().optional(),
     image: Joi.string().optional() // URL validation for the image
 
 });

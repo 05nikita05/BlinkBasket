@@ -30,7 +30,7 @@ const adminSchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const adminValidationSchema = Joi.object({
+const validateAdmin = Joi.object({
     name: Joi.string().min(3).max(100).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
@@ -39,5 +39,5 @@ const adminValidationSchema = Joi.object({
 
 module.exports = {
     adminModel : mongoose.model('Admin', adminSchema),
-    adminValidationSchema
+    validateAdmin
 };

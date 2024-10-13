@@ -28,7 +28,7 @@ const cartSchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const cartValidationSchema = Joi.object({
+const validateCart = Joi.object({
     user: Joi.string().hex().length(24).required(), // ObjectId should be 24 characters long
     products: Joi.array().items(Joi.string().hex().length(24)).min(1).required(), // At least one product
     totalPrice: Joi.number().min(0).required() // Total price should be non-negative
@@ -36,5 +36,5 @@ const cartValidationSchema = Joi.object({
 
 module.exports = {
     cartModel:mongoose.model('cart',cartSchema),
-    cartValidationSchema
+    validateCart
 };

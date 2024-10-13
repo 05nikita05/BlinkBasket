@@ -2,8 +2,9 @@ require("dotenv").config();
 const express = require('express');
 const router = express.Router();
 const {adminModel} = require('../models/adminModel');
-const {productModel} = require('../models/productModel');
-const {categoryModel}= require('../models/categoryModel');
+const {productModel,validateProduct} = require('../models/productModel');
+const {categoryModel,validateCategory}= require('../models/categoryModel');
+
 
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
@@ -27,7 +28,7 @@ if(typeof process.env.NODE_ENV !== undefined &&
             })
             await user.save();
 
-            let token = jwt.sign({email: "nikita@gmail.com"},process.env.JWT_KEY);
+            let token = jwt.sign({email: "nikita@gmail.com",admin:true},process.env.JWT_KEY);
             res.cookie("token",token);
             res.send("admin created successfully");
             }
@@ -47,14 +48,17 @@ router.post('/login',async(req,res)=>{
 
     let valid = await bcrypt.compare(password, admin.password);
     if(valid){
-        let token = jwt.sign({email: "nikita@gmail.com"},process.env.JWT_KEY);
+        let token = jwt.sign({email: "nikita@gmail.com",admin:true},process.env.JWT_KEY);
             res.cookie("token",token);
             res.redirect("/admin/dashboard");
     }
 })
 
-router.get('/dashboard',validateAdmin,(req,res)=>{
-    res.render('admin_dashboard');
+router.get('/dashboard',validateAdmin,async(req,res)=>{
+    let prodcount = await productModel.countDocuments();
+    let categcount = await categoryModel.countDocuments();
+
+    res.render('admin_dashboard',{prodcount,categcount});
 })
 
 router.get('/products',validateAdmin,async(req,res)=>{
@@ -85,9 +89,9 @@ const formattedResult = result.reduce((acc, item) => {
     return acc;
   }, {});
   
-  console.log(formattedResult);
-          
-    // res.render('admin_products',{products})
+//   console.log(formattedResult);
+    res.render('admin_products',{products:formattedResult})
+
 })
 
 router.get('/logout',validateAdmin,(req,res)=>{

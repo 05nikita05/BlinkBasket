@@ -50,7 +50,7 @@ const orderSchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const orderValidationSchema = Joi.object({
+const validateOrder = Joi.object({
     user: Joi.string().hex().length(24).required(), // ObjectId should be 24 characters long
     products: Joi.array().items(Joi.string().hex().length(24)).min(1).required(), // At least one product
     totalPrice: Joi.number().min(0).required(), // Non-negative number
@@ -62,5 +62,5 @@ const orderValidationSchema = Joi.object({
 
 module.exports = {
     orderModel : mongoose.model('Order', orderSchema),
-    orderValidationSchema
+    validateOrder
 };

@@ -78,7 +78,7 @@ const addressValidationSchema = Joi.object({
     address: Joi.string().min(5).max(255).required()
 });
 
-const userValidationSchema = Joi.object({
+const validateUser = Joi.object({
     name: Joi.string().min(3).max(100).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
@@ -88,5 +88,5 @@ const userValidationSchema = Joi.object({
 
 module.exports = {
     userModel : mongoose.model('User', userSchema),
-    userValidationSchema
+    validateUser
 };

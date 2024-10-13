@@ -14,11 +14,11 @@ const categorySchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const categoryValidationSchema = Joi.object({
+const validateCategory = Joi.object({
     name: Joi.string().min(3).max(100).required() // Minimum 3 and maximum 100 characters
 });
 
 module.exports = {
     categoryModel : mongoose.model('Category', categorySchema),
-    categoryValidationSchema
+    validateCategory
 };

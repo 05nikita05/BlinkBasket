@@ -33,7 +33,7 @@ const deliverySchema = mongoose.Schema({
 
 
 // Joi Validation Schema
-const deliveryValidationSchema = Joi.object({
+const validateDelivery = Joi.object({
     order: Joi.string().hex().length(24).required(), // ObjectId should be 24 characters long
     deliveryBoy: Joi.string().min(3).max(100).required(),
     status: Joi.string().valid('pending', 'in-transit', 'delivered', 'canceled').required(),
@@ -43,5 +43,5 @@ const deliveryValidationSchema = Joi.object({
 
 module.exports = {
     deliveryModel : mongoose.model('Delivery', deliverySchema),
-    deliveryValidationSchema
+    validateDelivery
 };
